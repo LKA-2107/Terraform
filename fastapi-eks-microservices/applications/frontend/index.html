@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>EKS Orders Lab</title>
+    <style>
+      body { font-family: system-ui, sans-serif; max-width: 720px; margin: 3rem auto; padding: 0 1rem; color: #172033; }
+      form { display: grid; gap: 1rem; padding: 1.5rem; border: 1px solid #d8deea; border-radius: 12px; }
+      label { display: grid; gap: .35rem; font-weight: 600; }
+      input, button { font: inherit; padding: .7rem; }
+      button { background: #2563eb; color: white; border: 0; border-radius: 8px; cursor: pointer; }
+      pre { background: #f4f6fa; padding: 1rem; border-radius: 8px; min-height: 3rem; white-space: pre-wrap; }
+    </style>
+  </head>
+  <body>
+    <h1>EKS Orders Lab</h1>
+    <p>Create an order. The API publishes it to SQS and the worker processes it asynchronously.</p>
+    <form id="order-form">
+      <label>Customer name <input id="customer" value="Learning User" required></label>
+      <label>Product ID <input id="product" value="eks-course" required></label>
+      <label>Quantity <input id="quantity" type="number" min="1" max="100" value="1" required></label>
+      <button type="submit">Create order</button>
+    </form>
+    <h2>Response</h2>
+    <pre id="result">Ready</pre>
+    <script>
+      document.querySelector('#order-form').addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const result = document.querySelector('#result');
+        result.textContent = 'Submitting…';
+        try {
+          const response = await fetch('/api/orders', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+              customer_name: document.querySelector('#customer').value,
+              items: [{
+                product_id: document.querySelector('#product').value,
+                quantity: Number(document.querySelector('#quantity').value)
+              }]
+            })
+          });
+          const body = await response.json();
+          result.textContent = JSON.stringify(body, null, 2);
+          if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        } catch (error) {
+          result.textContent += `\n${error}`;
+        }
+      });
+    </script>
+  </body>
+</html>
+

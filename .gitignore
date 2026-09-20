@@ -1,0 +1,17 @@
+# Local .terraform directories (provider plugins and cached modules)
+.terraform/
+
+# Terraform state files (contain secrets and architecture metadata)
+*.tfstate
+*.tfstate.*
+
+# Crash logs and sensitive variable definitions
+crash.log
+*.tfvars
+*.tfvars.json
+
+# Override files
+override.tf
+override.tf.json
+_override.tf
+_override.tf.json
