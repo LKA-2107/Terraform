@@ -9,7 +9,7 @@ from pydantic import BaseModel, Field
 
 logging.basicConfig(level=os.getenv("LOG_LEVEL", "INFO"))
 logger = logging.getLogger("orders-api")
-app = FastAPI(title="Orders API", version="2.0.0")
+app = FastAPI(title="Orders API", version="5.0.0")
 
 # Learning-only storage: lost on restart and not shared between replicas.
 orders: dict[str, dict] = {}
@@ -28,8 +28,11 @@ class CreateOrderRequest(BaseModel):
 
 @app.get("/healthz")
 def health() -> dict[str, str]:
-    return {"status": "healthy"}
-
+    return {
+        "status": "healthy",
+        "version": "v5",
+        "deployed_by": "argocd",
+    }
 
 @app.get("/readyz")
 def readiness() -> dict[str, str]:
